@@ -1,7 +1,10 @@
 import requests
+from dotenv import load_dotenv
+import os
 
-# Replace with your actual key
-API_KEY = "c106825ae145200ef3d090b3b8dd2417"
+load_dotenv()
+
+API_KEY = os.getenv("API_KEY")
 from get_location import get_location
 
 
@@ -57,3 +60,4 @@ def estimate_water_level(rainfall):
     # Fake logic for now, can be improved
     base = 2.0  # base water level
     return base + (rainfall * 0.1)
+
