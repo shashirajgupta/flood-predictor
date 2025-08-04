@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🌊 AI Flood Predictor</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+  <div class="container">
+    <h1>🌊 AI Flood Prediction System</h1>
+
+    <form method="POST" class="form-card">
+      <h2>Enter Environmental Data</h2>
+      <label>City:</label>
+      <input type="text" name="city" placeholder="e.g. Chennai" required>
+
+      <button type="submit">🔍 Predict Flood</button>
+    </form>
+
+    <form method="GET">
+      <button name="live" value="1" class="live-btn">🌐 Use Live Weather Data</button>
+    </form>
+
+    {% if result %}
+    <div class="result-box {{ 'flood' if result == 'Flood likely' else 'safe' }}">
+      <h2>🚨 Prediction Result:</h2>
+      <p><strong>{{ result }}</strong></p>
+    </div>
+    {% endif %}
+
+    {% if weather %}
+    <div class="weather-box">
+      <h2>📡 Weather Data Used:</h2>
+      <ul>
+        <li><strong>City:</strong> {{ weather.city }}</li>
+        <li><strong>Rainfall:</strong> {{ weather.rainfall }} mm</li>
+        <li><strong>Temperature:</strong> {{ weather.temperature }} °C</li>
+        <li><strong>Humidity:</strong> {{ weather.humidity }} %</li>
+        <li><strong>Water Level:</strong> {{ weather.water_level }} m</li>
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+  <!-- ✅ Chatbot -->
+<div id="chatbot-container" style="
+  position: fixed;
+  bottom: 10px;
+  right: 20px;
+  width: 300px;
+  background: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-family: sans-serif;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+">
+  <div id="chat-header" style="
+    background: #007bff;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    position: relative;
+  " onclick="toggleChat()">
+    💬 Ask FloodBot
+    <div style="position: absolute; right: 10px; top: 5px;">
+      <button onclick="toggleMaximize(event)" style="border: none; background: transparent; color: white; font-size: 16px;">🗖</button>
+      <button onclick="closeChat()" style="border: none; background: transparent; color: white; font-size: 16px;">✖</button>
+    </div>
+  </div>
+
+  <div id="chat-body" style="
+    display: none;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+  ">
+    <div id="chat-log" style="
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 10px;
+      background: #eee;
+    "></div>
+    <input type="text" id="chat-input" placeholder="Type your message..." onkeydown="handleChat(event)" style="
+      padding: 8px;
+      border: none;
+      border-top: 1px solid #ccc;
+      width: 100%;
+      box-sizing: border-box;
+    " />
+  </div>
+</div>
+
+<script>
+  let isMaximized = false;
+
+  function toggleChat() {
+    const chatBody = document.getElementById("chat-body");
+    chatBody.style.display = chatBody.style.display === "none" ? "block" : "none";
+  }
+
+  function toggleMaximize(event) {
+  event.stopPropagation(); // Prevent triggering toggleChat
+  const container = document.getElementById("chatbot-container");
+  const chatBody = document.getElementById("chat-body");
+
+  if (!isMaximized) {
+    container.style.width = "90vw";
+    container.style.height = "80vh";
+    container.style.left = "auto";
+    container.style.right = "20px";
+    container.style.bottom = "10px";
+    container.style.top = "auto";
+    container.style.transform = "none";
+    chatBody.style.height = "calc(100% - 60px)";
+    chatBody.style.maxHeight = "none";
+    isMaximized = true;
+  } else {
+    container.style.width = "300px";
+    container.style.height = "auto";
+    container.style.bottom = "10px";
+    container.style.right = "20px";
+    chatBody.style.maxHeight = "300px";
+    isMaximized = false;
+  }
+}
+
+  function closeChat(event) {
+    event.stopPropagation(); // Prevent triggering toggleChat
+    document.getElementById("chatbot-container").style.display = "none";
+  }
+
+  function handleChat(event) {
+    if (event.key === "Enter") {
+      const input = document.getElementById("chat-input");
+      const message = input.value.trim();
+      if (!message) return;
+
+      const chatLog = document.getElementById("chat-log");
+      chatLog.innerHTML += `<div><strong>You:</strong> ${message}</div>`;
+      input.value = "";
+
+      fetch("/chatbot", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message })
+      })
+      .then(response => response.json())
+      .then(data => {
+        chatLog.innerHTML += `<div><strong>Bot:</strong> ${data.reply}</div>`;
+        chatLog.scrollTop = chatLog.scrollHeight;
+      })
+      .catch(error => {
+        chatLog.innerHTML += `<div><strong>Bot:</strong> ❌ Error talking to server.</div>`;
+      });
+    }
+  }
+</script>
+
+</body>
+</html>
