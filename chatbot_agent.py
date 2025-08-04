@@ -6,7 +6,7 @@ load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # 🔐 Gemini API key
-genai.configure(api_key="GEMINI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
 
 model = genai.GenerativeModel("gemini-1.5-flash-latest")
 
@@ -24,4 +24,5 @@ def ask_gemini_bot(user_question):
         return response.text.strip()
     except Exception as e:
         return f"⚠️ Gemini error: {str(e)}"
+
 
