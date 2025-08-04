@@ -56,6 +56,8 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: width 0.3s, height 0.3s;
 ">
   <div id="chat-header" style="
     background: #007bff;
@@ -67,15 +69,14 @@
     💬 Ask FloodBot
     <div style="position: absolute; right: 10px; top: 5px;">
       <button onclick="toggleMaximize(event)" style="border: none; background: transparent; color: white; font-size: 16px;">🗖</button>
-      <button onclick="closeChat()" style="border: none; background: transparent; color: white; font-size: 16px;">✖</button>
+      <button onclick="closeChat(event)" style="border: none; background: transparent; color: white; font-size: 16px;">✖</button>
     </div>
   </div>
 
   <div id="chat-body" style="
     display: none;
-    flex-grow: 1;
-    display: flex;
     flex-direction: column;
+    flex-grow: 1;
     height: 300px;
   ">
     <div id="chat-log" style="
@@ -84,15 +85,18 @@
       padding: 10px;
       background: #eee;
     "></div>
-    <input type="text" id="chat-input" placeholder="Type your message..." onkeydown="handleChat(event)" style="
-      padding: 8px;
-      border: none;
-      border-top: 1px solid #ccc;
-      width: 100%;
-      box-sizing: border-box;
-    " />
+    <div style="border-top: 1px solid #ccc;">
+      <input type="text" id="chat-input" placeholder="Type your message..." onkeydown="handleChat(event)" style="
+        padding: 10px;
+        width: 100%;
+        border: none;
+        box-sizing: border-box;
+        font-size: 14px;
+      " />
+    </div>
   </div>
 </div>
+
 
 <script>
   let isMaximized = false;
@@ -103,30 +107,31 @@
   }
 
   function toggleMaximize(event) {
-  event.stopPropagation(); // Prevent triggering toggleChat
+  event.stopPropagation(); // Prevent toggle
   const container = document.getElementById("chatbot-container");
   const chatBody = document.getElementById("chat-body");
 
   if (!isMaximized) {
     container.style.width = "90vw";
     container.style.height = "80vh";
-    container.style.left = "auto";
-    container.style.right = "20px";
-    container.style.bottom = "10px";
-    container.style.top = "auto";
-    container.style.transform = "none";
-    chatBody.style.height = "calc(100% - 60px)";
-    chatBody.style.maxHeight = "none";
+    container.style.top = "10vh";
+    container.style.right = "5vw";
+    container.style.left = "5vw";
+    container.style.bottom = "auto";
+    chatBody.style.height = "calc(100% - 50px)";
     isMaximized = true;
   } else {
     container.style.width = "300px";
     container.style.height = "auto";
     container.style.bottom = "10px";
     container.style.right = "20px";
-    chatBody.style.maxHeight = "300px";
+    container.style.top = "auto";
+    container.style.left = "auto";
+    chatBody.style.height = "300px";
     isMaximized = false;
   }
 }
+
 
   function closeChat(event) {
     event.stopPropagation(); // Prevent triggering toggleChat
@@ -162,3 +167,4 @@
 
 </body>
 </html>
+
