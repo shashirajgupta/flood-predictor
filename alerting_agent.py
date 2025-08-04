@@ -24,8 +24,9 @@ def send_alert_email(subject, body, to_email):
 
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
-            smtp.login('shashirajgupta7@gmail.com', 'EMAIL_PASSWORD')  
+            smtp.login('shashirajgupta7@gmail.com', EMAIL_PASSWORD)  
             smtp.send_message(msg)
         print(f"✅ Alert sent to {to_email}")
     except Exception as e:
         print(f"❌ Failed to send email: {e}")
+
