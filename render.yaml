@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: flood-chatbot
+    env: python
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "python app.py"
+    envVars:
+      - key: GEMINI_API_KEY
+        value: replace-this-in-dashboard
+      - key: EMAIL_PASSWORD
+        value: replace-this-in-dashboard
